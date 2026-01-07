@@ -12,7 +12,7 @@ let visits = parseInt(localStorage.getItem('visits') || "0");
 visits++;
 localStorage.setItem('visits', visits);
 
-// --- Random degradation threshold (1–6) ---
+// --- Random degradation threshold (1–6 visits) ---
 let degradeThreshold = localStorage.getItem('degradeThreshold');
 if (!degradeThreshold) {
   degradeThreshold = Math.floor(Math.random() * 6) + 1;
@@ -44,18 +44,26 @@ if (visits >= 3 && (hour >= 23 || hour < 5)) {
   message = "You’ve been here too long.";
 }
 
-// --- Content degradation ---
-function degradeText(text, visitsCount) {
-  let charsToRemove = Math.min(visitsCount, text.length - 1);
-  let start = Math.floor(charsToRemove / 2);
+// --- Content degradation: random 1-2 character removal ---
+function degradeText(text) {
+  if(text.length <= 1) return text; // nothing to degrade
+
+  // remove 1 or 2 chars randomly
+  let charsToRemove = Math.min(Math.floor(Math.random() * 2) + 1, text.length - 1);
+
+  // random start index
+  let start = Math.floor(Math.random() * (text.length - charsToRemove + 1));
   let end = start + charsToRemove;
+
+  // replace selected chars with dots
   let degraded = text.substring(0, start) + "...".substring(0, charsToRemove) + text.substring(end);
+
   return degraded;
 }
 
 // --- Apply degradation if visits >= threshold ---
 if (visits >= degradeThreshold) {
-  message = degradeText(message, visits);
+  message = degradeText(message);
   document.body.classList.add('degraded');
 }
 
