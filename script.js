@@ -12,31 +12,31 @@ let visits = parseInt(localStorage.getItem('visits') || "0");
 visits++;
 localStorage.setItem('visits', visits);
 
+// --- Random threshold for degradation (1–6) ---
+let degradeThreshold = localStorage.getItem('degradeThreshold');
+if (!degradeThreshold) {
+  degradeThreshold = Math.floor(Math.random() * 6) + 1; // 1 to 6
+  localStorage.setItem('degradeThreshold', degradeThreshold);
+}
+
 // --- Get current hour ---
 const now = new Date();
 const hour = now.getHours();
+const minute = now.getMinutes(); // optional for debugging
 
-// --- Define base message ---
+// --- Base message ---
 let message = "Rest optimization available.";
 
-// --- Modify message based on time ---
+// --- Time-based behavior ---
 if (hour >= 23 || hour < 5) {
   message = "You should be asleep.";
 } else if (hour >= 20) {
   message = "Preparing rest cycle…";
 }
 
-// --- Modify message based on number of visits (LocalStorage) ---
+// --- Visit-based behavior ---
 if (visits >= 3 && (hour >= 23 || hour < 5)) {
   message = "You’ve been here too long.";
-}
-
-// --- Decide a random threshold for degradation (1 to 6) ---
-// Store it in LocalStorage so it stays consistent across visits
-let degradeThreshold = localStorage.getItem('degradeThreshold');
-if (!degradeThreshold) {
-  degradeThreshold = Math.floor(Math.random() * 6) + 1; // 1 to 6
-  localStorage.setItem('degradeThreshold', degradeThreshold);
 }
 
 // --- Content Degradation function ---
@@ -48,7 +48,7 @@ function degradeText(text, visitsCount) {
   return degraded;
 }
 
-// Apply degradation if visits >= random threshold
+// --- Apply degradation if visits >= random threshold ---
 if (visits >= degradeThreshold) {
   message = degradeText(message, visits);
 }
@@ -56,7 +56,7 @@ if (visits >= degradeThreshold) {
 // --- Update the status element ---
 status.textContent = message;
 
-// --- Optional: subtle fade-in ---
+// --- Fade-in for main content ---
 if (main) {
   main.style.opacity = 0;
   main.style.transition = "opacity 2s ease-in-out";
@@ -65,7 +65,7 @@ if (main) {
   }, 100);
 }
 
-// --- Optional: background gradient changes ---
+// --- Dynamic background gradient ---
 document.body.style.background =
   (hour >= 23 || hour < 5) ? "linear-gradient(#0b0b0d, #1a1a20)" :
   (hour >= 20) ? "linear-gradient(#101018, #1a1a20)" :
@@ -73,4 +73,5 @@ document.body.style.background =
 document.body.style.transition = "background 3s ease-in-out";
 
 // --- Debug console log ---
-console.log(`Visit #${visits} at ${hour}:${now.getMinutes().toString().padStart(2,"0")}`);
+console.log(`Visit #${visits} at ${hour}:${minute.toString().padStart(2,"0")}`);
+console.log(`Degradation threshold for this user: ${degradeThreshold}`);
