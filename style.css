@@ -3,8 +3,8 @@ body {
   margin: 0;
   padding: 0;
   height: 100vh;
-  background: linear-gradient(#0e0e11, #121218); /* dark gradient */
-  color: #cfcfd6; /* muted off-white */
+  background: linear-gradient(#0e0e11, #121218);
+  color: #cfcfd6;
   font-family: system-ui, sans-serif;
   display: flex;
   justify-content: center;
@@ -15,7 +15,7 @@ body {
 main {
   text-align: center;
   max-width: 400px;
-  opacity: 0.9; /* slightly ghostly */
+  opacity: 0.9; /* initial opacity for fade-in */
 }
 
 /* Heading */
@@ -25,13 +25,13 @@ h1 {
   margin-bottom: 20px;
 }
 
-/* Status paragraph (JS-updated) */
+/* Status paragraph */
 p#status {
   font-size: 1rem;
-  opacity: 0.75; /* subtle, not harsh */
+  opacity: 0.75;
 }
 
-/* Optional: fade-in effect for creepiness */
+/* Optional fade-in for main content */
 main {
   animation: fadeIn 2s ease-in-out;
 }
