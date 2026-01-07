@@ -31,9 +31,16 @@ if (visits >= 3 && (hour >= 23 || hour < 5)) {
   message = "You’ve been here too long.";
 }
 
-// --- Content Degradation (vanishing letters) ---
+// --- Decide a random threshold for degradation (1 to 6) ---
+// Store it in LocalStorage so it stays consistent across visits
+let degradeThreshold = localStorage.getItem('degradeThreshold');
+if (!degradeThreshold) {
+  degradeThreshold = Math.floor(Math.random() * 6) + 1; // 1 to 6
+  localStorage.setItem('degradeThreshold', degradeThreshold);
+}
+
+// --- Content Degradation function ---
 function degradeText(text, visitsCount) {
-  // slowly remove letters as visits increase
   let charsToRemove = Math.min(visitsCount, text.length - 1);
   let start = Math.floor(charsToRemove / 2);
   let end = start + charsToRemove;
@@ -41,8 +48,8 @@ function degradeText(text, visitsCount) {
   return degraded;
 }
 
-// Apply degradation only after 2 visits
-if (visits >= 2) {
+// Apply degradation if visits >= random threshold
+if (visits >= degradeThreshold) {
   message = degradeText(message, visits);
 }
 
