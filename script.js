@@ -1,10 +1,10 @@
-const now = new Date();
-const hour = now.getHours();
-const minute = now.getMinutes();
+const status = document.getElementById("status");
+const hour = new Date().getHours();
 
-document.body.insertAdjacentHTML(
-  "beforeend",
-  `<p style="position:fixed;bottom:10px;opacity:0.4;font-size:12px;">
-     Local time detected: ${hour}:${minute.toString().padStart(2,"0")}
-   </p>`
-);
+if (hour >= 23 || hour < 5) {
+  status.textContent = "You should be asleep.";
+} else if (hour >= 20) {
+  status.textContent = "Preparing rest cycle…";
+} else {
+  status.textContent = "Rest optimization available.";
+}
