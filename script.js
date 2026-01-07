@@ -1,45 +1,50 @@
-// --- Hidden developer logs / ARG hints ---
+// --- Hidden ARG logs ---
 console.log("<!-- sleep debt unresolved -->");
 console.log("<!-- remaining awake has been noted -->");
 console.log("<!-- some states are archived -->");
 
-// --- Get main elements ---
+// --- Elements ---
 const status = document.getElementById("status");
 const main = document.querySelector("main");
 
-// --- Track user visits with LocalStorage ---
+// --- Visit tracking ---
 let visits = parseInt(localStorage.getItem('visits') || "0");
 visits++;
 localStorage.setItem('visits', visits);
 
-// --- Random threshold for degradation (1–6) ---
+// --- Random degradation threshold (1–6) ---
 let degradeThreshold = localStorage.getItem('degradeThreshold');
 if (!degradeThreshold) {
-  degradeThreshold = Math.floor(Math.random() * 6) + 1; // 1 to 6
+  degradeThreshold = Math.floor(Math.random() * 6) + 1;
   localStorage.setItem('degradeThreshold', degradeThreshold);
 }
 
 // --- Get current hour ---
 const now = new Date();
-const hour = now.getHours();
+let hour = now.getHours();
 const minute = now.getMinutes(); // optional for debugging
 
-// --- Base message ---
-let message = "Rest optimization available.";
+// --- TEST MODE: Simulate hour via URL ?hour=X ---
+const testHour = parseInt(new URLSearchParams(window.location.search).get("hour"));
+if (!isNaN(testHour) && testHour >= 0 && testHour <= 23) {
+  console.log(`Simulating hour: ${testHour}`);
+  hour = testHour;
+}
 
-// --- Time-based behavior ---
+// --- Base message by hour ---
+let message = "Rest optimization available.";
 if (hour >= 23 || hour < 5) {
   message = "You should be asleep.";
 } else if (hour >= 20) {
   message = "Preparing rest cycle…";
 }
 
-// --- Visit-based behavior ---
+// --- Visit-based override ---
 if (visits >= 3 && (hour >= 23 || hour < 5)) {
   message = "You’ve been here too long.";
 }
 
-// --- Content Degradation function ---
+// --- Content degradation ---
 function degradeText(text, visitsCount) {
   let charsToRemove = Math.min(visitsCount, text.length - 1);
   let start = Math.floor(charsToRemove / 2);
@@ -48,30 +53,33 @@ function degradeText(text, visitsCount) {
   return degraded;
 }
 
-// --- Apply degradation if visits >= random threshold ---
+// --- Apply degradation if visits >= threshold ---
 if (visits >= degradeThreshold) {
   message = degradeText(message, visits);
+  document.body.classList.add('degraded');
 }
 
-// --- Update the status element ---
+// --- Night flicker effect ---
+if (hour >= 23 || hour < 5) {
+  document.body.classList.add('night');
+}
+
+// --- Update status ---
 status.textContent = message;
 
-// --- Fade-in for main content ---
+// --- Fade-in effect ---
 if (main) {
   main.style.opacity = 0;
   main.style.transition = "opacity 2s ease-in-out";
-  setTimeout(() => {
-    main.style.opacity = 0.9;
-  }, 100);
+  setTimeout(() => { main.style.opacity = 0.9; }, 100);
 }
 
-// --- Dynamic background gradient ---
+// --- Background gradient by hour ---
 document.body.style.background =
   (hour >= 23 || hour < 5) ? "linear-gradient(#0b0b0d, #1a1a20)" :
   (hour >= 20) ? "linear-gradient(#101018, #1a1a20)" :
   "linear-gradient(#0e0e11, #121218)";
-document.body.style.transition = "background 3s ease-in-out";
 
-// --- Debug console log ---
+// --- Debug console ---
 console.log(`Visit #${visits} at ${hour}:${minute.toString().padStart(2,"0")}`);
 console.log(`Degradation threshold for this user: ${degradeThreshold}`);
