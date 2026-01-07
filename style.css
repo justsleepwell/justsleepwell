@@ -1,1 +1,43 @@
+/* Body styling */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background: linear-gradient(#0e0e11, #121218); /* dark gradient */
+  color: #cfcfd6; /* muted off-white */
+  font-family: system-ui, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Main container */
+main {
+  text-align: center;
+  max-width: 400px;
+  opacity: 0.9; /* slightly ghostly */
+}
+
+/* Heading */
+h1 {
+  font-weight: 300;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+/* Status paragraph (JS-updated) */
+p#status {
+  font-size: 1rem;
+  opacity: 0.75; /* subtle, not harsh */
+}
+
+/* Optional: fade-in effect for creepiness */
+main {
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 0.9; }
+}
 
